@@ -5,6 +5,10 @@ using Credit_Info_API.Data;
 using Credit_Info_API.Models;
 using Microsoft.CodeAnalysis.Scripting;
 using BCrypt;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Credit_Info_API.Controllers
 {
@@ -13,10 +17,12 @@ namespace Credit_Info_API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(ApplicationDbContext context)
+        public AuthController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // POST: api/auth/register
@@ -31,7 +37,7 @@ namespace Credit_Info_API.Controllers
             if (existingUser != null)
                 return BadRequest(new { message = "User already exists" });
 
-            // Hash the password (install BCrypt.Net-Next)
+            // Hash the password 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
             // Create a new User entity
@@ -65,19 +71,44 @@ namespace Credit_Info_API.Controllers
             if (!isPasswordCorrect)
                 return Unauthorized(new { message = "Invalid password" });
 
+            var token = GenerateJwtToken(existingUser);
+
             return Ok(new
             {
                 message = "Login successful",
+                token = token,
                 user = new
                 {
                     existingUser.Id,
                     existingUser.Email,
                     existingUser.Role
                 }
-            }
-            );
+            });
 
-            // later will give JWT here
+
+        }
+        private string GenerateJwtToken(User user)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["DurationInMinutes"])),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
     }
