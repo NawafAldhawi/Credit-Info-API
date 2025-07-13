@@ -61,8 +61,23 @@ namespace Credit_Info_API.Controllers
                 return BadRequest(new { message = "User Does Not Exist" });
 
             //then verify
+            bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(model.Password, existingUser.PasswordHash);
+            if (!isPasswordCorrect)
+                return Unauthorized(new { message = "Invalid password" });
 
+            return Ok(new
+            {
+                message = "Login successful",
+                user = new
+                {
+                    existingUser.Id,
+                    existingUser.Email,
+                    existingUser.Role
+                }
+            }
+            );
 
+            // later will give JWT here
         }
 
     }
