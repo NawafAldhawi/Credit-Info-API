@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Credit-Info-API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+feb4860e86cac7740203ed083e27a67a7c6a326a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+880b00f5cdbff370965bbb334ba7c493a56b08c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Credit-Info-API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Credit-Info-API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
