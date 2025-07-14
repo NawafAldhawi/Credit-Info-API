@@ -316,3 +316,4 @@ C:\Users\natsu\Documents\GitHub\Credit-Info-API\Credit-Info-API\obj\Debug\net8.0
 C:\Users\natsu\Documents\GitHub\Credit-Info-API\Credit-Info-API\obj\Debug\net8.0\Credit-Info-API.pdb
 C:\Users\natsu\Documents\GitHub\Credit-Info-API\Credit-Info-API\obj\Debug\net8.0\Credit-Info-API.genruntimeconfig.cache
 C:\Users\natsu\Documents\GitHub\Credit-Info-API\Credit-Info-API\obj\Debug\net8.0\ref\Credit-Info-API.dll
+C:\Users\natsu\Documents\GitHub\Credit-Info-API\Credit-Info-API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
