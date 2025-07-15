@@ -20,12 +20,14 @@ namespace Credit_Info_API.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
+        private readonly IJwtService _JwtService;
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration, IUserService userService)
+        public AuthController(ApplicationDbContext context, IConfiguration configuration, IUserService userService, IJwtService jwtService)
         {
             _context = context;
             _configuration = configuration;
             _userService = userService;
+            _JwtService = jwtService;
         }
 
         [HttpPost("register")]
@@ -56,7 +58,7 @@ namespace Credit_Info_API.Controllers
             if (!isPasswordCorrect)
                 return Unauthorized(new { message = "Invalid password" });
 
-            var token = GenerateJwtToken(existingUser);
+            var token = _JwtService.GenerateJwtToken(existingUser);
 
             return Ok(new
             {
@@ -71,29 +73,5 @@ namespace Credit_Info_API.Controllers
             });
         }
 
-        private string GenerateJwtToken(User user)
-        {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
     }
 }

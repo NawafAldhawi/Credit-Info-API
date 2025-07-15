@@ -41,5 +41,6 @@ namespace Credit_Info_API.Services
         {
             return BCrypt.Net.BCrypt.Verify(inputPassword, hashedPassword);
         }
+
     }
 }
