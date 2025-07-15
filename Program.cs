@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Credit_Info_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,16 +40,18 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage(); // <- add this
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseAuthentication();
 app.UseAuthorization();
