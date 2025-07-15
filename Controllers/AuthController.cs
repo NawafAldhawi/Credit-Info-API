@@ -25,13 +25,13 @@ namespace Credit_Info_API.Controllers
 
 
         public AuthController(ApplicationDbContext context, IConfiguration configuration, IUserService userService, 
-            IJwtService jwtService, IAdminServices adminService)
+            IJwtService jwtService )
         {
             _context = context;
             _configuration = configuration;
             _userService = userService;
             _JwtService = jwtService;
-            _adminService = adminService;
+   
         }
 
         [HttpPost("register")]
