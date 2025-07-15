@@ -21,13 +21,17 @@ namespace Credit_Info_API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
         private readonly IJwtService _JwtService;
+        private readonly IAdminServices _adminService;
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration, IUserService userService, IJwtService jwtService)
+
+        public AuthController(ApplicationDbContext context, IConfiguration configuration, IUserService userService, 
+            IJwtService jwtService, IAdminServices adminService)
         {
             _context = context;
             _configuration = configuration;
             _userService = userService;
             _JwtService = jwtService;
+            _adminService = adminService;
         }
 
         [HttpPost("register")]
